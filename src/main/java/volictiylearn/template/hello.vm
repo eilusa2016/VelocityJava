@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Hello Velocity</title>
+</head>
+<body>
+	<p>
+		测试的数据$data
+	</p>
+</body>
+</html>
