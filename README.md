@@ -26,3 +26,55 @@ public class ${className}Controller {
 }
 ```
 其中使用${}包裹的内容为变量，在后面会被替换。未被包裹的内容维持不变，包括空格，Tab和换行。
+### 1.  使用
+首先需要定义并初始化VelocityEngine：
+```python
+VelocityEngine ve = new VelocityEngine();
+// 设置资源路径
+ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+// 初始化
+ve.init();
+```
+**然后将模板载入到一个Template对象中：**
+```python
+// 载入模板
+Template t = ve.getTemplate("vm/controller.java.vm");
+```
+**使用VelocityContext定义替换的规则：**
+```python
+VelocityContext ctx = new VelocityContext();
+ctx.put("package", "com.spring.template");
+ctx.put("className", "test");
+ctx.put("Object", "Value");
+```
+**VelocityContext也可以直接接收一个Map对象：**
+```python
+Map contextMap = new HashMap();
+contextMap.put("package", "com.spring.template");
+contextMap.put("className", "test");
+contextMap.put("Object", "Value");
+VelocityContext ctx = new VelocityContext(contextMap);
+```
+**定义一个StringWriter来存储合并后的结果：**
+```python
+StringWriter sw = new StringWriter();
+t.merge(ctx, sw);
+String r = sw.toString();
+```
+**运行该代码，最终生成结果为：**
+```python
+package com.spring.template.controller;
+@Mapper
+public interface testController {
+    public void getValue() {
+    }
+    public void setValue() {
+    }
+}
+```
+
+### 2. 关于数据库自动生成
+类似MyBatis那样，从数据库直接映射出对应的Dao，xml与model类。
+关键点在于需要使用select语句查询出指定表的结构。有了表结构，就可以动态生成增删改查的sql语句，同样也可以使用vm来动态生成model类。
+vm仅仅作为模板，替换模板中的变量后，生成的内容可以写到各种类型的文件中，例如.java，.xml，.properties等
